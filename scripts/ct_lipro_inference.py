@@ -38,7 +38,7 @@ class ImageLatentsClassifier(nn.Module):
     def save(self, file_path):
         torch.save(self.state_dict(), file_path)
     def load(self, file_path):
-        loaded_state_dict = torch.load(file_path)
+        loaded_state_dict = torch.load(file_path,weights_only=False)
         self.load_state_dict(loaded_state_dict)
 
 def evaluate_model(args, model, dataloader, device):

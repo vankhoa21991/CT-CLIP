@@ -1,0 +1,6 @@
+__pycache__
+transformer_maskgit/transformer_maskgit/__pycache__
+*.egg-info
+scripts/output_folder
+inference_zeroshot
+*.png

@@ -43,12 +43,12 @@ clip = CTCLIP(
 )
 trainer = CTClipTrainer(
     clip,
-    reports_file_train= "path_to_train_reports_csv",
-    reports_file_valid= "path_to_validation_reports_csv",
-    data_train= "path_to_preprocessed_train",
-    data_valid = "path_to_preprocessed_valid",
-    labels = "path_to_validation_labels_csv",
-    batch_size = 8,
+    reports_file_train= "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/radiology_text_reports/train_reports.csv",
+    reports_file_valid= "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/radiology_text_reports/validation_reports.csv",
+    data_train= "/mnt/home/admvkl@median.cad/code/public/example_download_script/data_volumes/dataset/train",
+    data_valid = "/mnt/home/admvkl@median.cad/code/public/example_download_script/data_volumes/dataset/valid_preprocessed",
+    labels = "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv",
+    batch_size = 2,
     results_folder="output_folder",
     num_train_steps = 100001,
     num_workers = 4,

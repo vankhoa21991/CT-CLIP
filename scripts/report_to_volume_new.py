@@ -16,11 +16,11 @@ def find_top_k_indices(values, k):
 
     return top_k_indices
 
-data_folder = "./path_to_save/"
+data_folder = "/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/"
 
 # Scan the folder for image and text .npz files
-image_npz_files = [f for f in os.listdir("/path_to_valid_latents_folder/image") if f.endswith('.npz')]
-text_npz_files = [f for f in os.listdir("/path_to_valid_latents_folder/text") if f.endswith('.npz')]
+image_npz_files = [f for f in os.listdir("/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/image") if f.endswith('.npz')]
+text_npz_files = [f for f in os.listdir("/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/text") if f.endswith('.npz')]
 
 # Initialize lists to store loaded data
 image_data_list = []
@@ -28,12 +28,12 @@ text_data_list = []
 
 # Load image and text .npz files
 for npz_file in tqdm.tqdm(image_npz_files):
-    file_path = os.path.join("/path_to_valid_latents_folder/image", npz_file)
+    file_path = os.path.join("/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/image", npz_file)
     image_data = np.load(file_path)["arr"][0]
     image_data_list.append(image_data)
 
 for npz_file in tqdm.tqdm(text_npz_files):
-    file_path = os.path.join("/path_to_valid_latents_folder/text", npz_file)
+    file_path = os.path.join("/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/text", npz_file)
     text_data = np.load(file_path)["arr"][0]
     text_data_list.append(text_data)
 

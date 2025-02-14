@@ -42,12 +42,13 @@ class CTReportDatasetinfer(Dataset):
         test_df = pd.read_csv(self.labels)
         test_label_cols = list(test_df.columns[1:])
         test_df['one_hot_labels'] = list(test_df[test_label_cols].values)
-
+        # print(f'Patient folders: {patient_folders}')
         for patient_folder in tqdm.tqdm(patient_folders):
             accession_folders = glob.glob(os.path.join(patient_folder, '*'))
 
             for accession_folder in accession_folders:
                 nii_files = glob.glob(os.path.join(accession_folder, '*.npz'))
+                # nii_files = glob.glob(os.path.join(accession_folder, '*.nii.gz'))
 
                 for nii_file in nii_files:
                     accession_number = nii_file.split("/")[-1]
@@ -66,9 +67,12 @@ class CTReportDatasetinfer(Dataset):
                         text_final = text_final + text
 
                     onehotlabels = test_df[test_df["VolumeName"] == accession_number]["one_hot_labels"].values
+                    # print(nii_file, text_final)
                     if len(onehotlabels) > 0:
                         samples.append((nii_file, text_final, onehotlabels[0]))
                         self.paths.append(nii_file)
+
+        print(f"Total samples: {len(samples)}")
         return samples
 
     def __len__(self):
@@ -127,5 +131,7 @@ class CTReportDatasetinfer(Dataset):
         input_text = input_text.replace('\'', '')  
         input_text = input_text.replace('(', '')  
         input_text = input_text.replace(')', '')  
-        name_acc = nii_file.split("/")[-2]
+        # name_acc = nii_file.split("/")[-2]
+        name_acc = nii_file.split("/")[-1].replace(".npz", "")
+        # print(nii_file)
         return video_tensor, input_text, onehotlabels, name_acc

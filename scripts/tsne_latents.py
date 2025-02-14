@@ -66,10 +66,11 @@ def plot_tsne(embedding, labels, k, concat_dict):
                         keys_dict = list(concat_dict.keys())
                         names_save.append(keys_dict[id].replace(".npz",".nii.gz"))
                         print(keys_dict[id])
-    df1 = pd.read_csv('train_predicted_labels.csv')
-    df2 = pd.read_csv('valid_predicted_labels.csv')
-    merged_df = pd.merge(df1, df2, how='outer')
-    filtered_df = merged_df[merged_df['VolumeName'].isin(names_save)]
+    # df1 = pd.read_csv('train_predicted_labels.csv')
+    # df2 = pd.read_csv('valid_predicted_labels.csv')
+    # merged_df = pd.merge(df1, df2, how='outer')
+    # merged_df = df2
+    # filtered_df = merged_df[merged_df['VolumeName'].isin(names_save)]
     #filtered_df.to_csv('filtered_output.csv', index=False)
 
 
@@ -85,24 +86,26 @@ def plot_tsne(embedding, labels, k, concat_dict):
     plt.xlabel("t-SNE 1")
     plt.ylabel("t-SNE 2")
     #plt.gca().invert_yaxis()
+    plt.legend()
     plt.savefig(f"new_image_latents.png", dpi=600)
     plt.show()
     plt.clf()
 
 if __name__ == "__main__":
-    latent_directory_train = "./path_to_latents/train/text_or_image"  # Directory containing train .npz files
-    latent_directory_valid = "./path_to_latents/valid/text_or_image"  # Directory containing validation .npz files
-    train_csv_path = "path_to_train_predicted_labels.csv"
-    validation_csv_path = "path_to_valid_predicted_labels.csv"
-    train_df = pd.read_csv(train_csv_path)
+    # latent_directory_train = "./path_to_latents/train/text_or_image"  # Directory containing train .npz files
+    latent_directory_valid = "/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/image"  # Directory containing validation .npz files
+    # train_csv_path = "path_to_train_predicted_labels.csv"
+    validation_csv_path = "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv"
+    # train_df = pd.read_csv(train_csv_path)
     validation_df = pd.read_csv(validation_csv_path)
 
     validation_latents, validation_label_dict = load_latents_and_labels(latent_directory_valid, validation_df)
     # Cache latents and labels
-    train_latents, train_label_dict = load_latents_and_labels(latent_directory_train, train_df)
+    # train_latents, train_label_dict = load_latents_and_labels(latent_directory_train, train_df)
 
-    all_latents = np.vstack([train_latents, validation_latents])
-    #all_latents = validation_latents
+    # all_latents = np.vstack([train_latents, validation_latents])
+
+    all_latents = validation_latents
     embedding = tsne_projection(all_latents)  # Compute t-SNE embedding only once
 
     def categorize_pathologies(count):
@@ -123,14 +126,16 @@ if __name__ == "__main__":
             return 5  # >13 Pathologies
 
     for i in range(1):
-        train_labels_count = np.array([np.sum(train_label_dict[file_name]) for file_name in train_label_dict.keys()])
+        # train_labels_count = np.array([np.sum(train_label_dict[file_name]) for file_name in train_label_dict.keys()])
         validation_labels_count = np.array([np.sum(validation_label_dict[file_name]) for file_name in validation_label_dict.keys()])
 
         # Combine train and validation labels
-        combined_labels_count = np.concatenate([train_labels_count, validation_labels_count])
+        # combined_labels_count = np.concatenate([train_labels_count, validation_labels_count])
+        combined_labels_count = validation_labels_count
 
+        # concat_dict = train_label_dict | validation_label_dict
+        concat_dict = validation_label_dict
 
-        concat_dict = train_label_dict | validation_label_dict
         # Categorize the counts into different groups
         combined_labels = np.array([categorize_pathologies(count) for count in combined_labels_count])
 

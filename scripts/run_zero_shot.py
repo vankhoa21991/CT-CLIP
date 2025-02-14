@@ -36,13 +36,13 @@ clip = CTCLIP(
 
 )
 
-clip.load("path_to_pretrained_model")
+clip.load("/mnt/home/admvkl@median.cad/code/public/CT-RATE/models/CT-CLIP-Related/CT-CLIP_v2.pt")
 
 inference = CTClipInference(
     clip,
-    data_folder = 'path_to_preprocessed_validation_folder',
-    reports_file= "path_to_validation_reports_csv",
-    labels = "path_to_validation_labels_csv",
+    data_folder = '/mnt/home/admvkl@median.cad/code/public/example_download_script/data_volumes/dataset/valid_preprocessed/',
+    reports_file= "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/radiology_text_reports/validation_reports.csv",
+    labels = "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv",
     batch_size = 1,
     results_folder="inference_zeroshot/",
     num_train_steps = 1,

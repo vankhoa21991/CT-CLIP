@@ -61,6 +61,7 @@ class CTReportDataset(Dataset):
 
     def load_accession_text(self, csv_file):
         df = pd.read_csv(csv_file)
+        df['AccessionNo'] = df['VolumeName']
         accession_to_text = {}
         for index, row in df.iterrows():
             accession_to_text[row['AccessionNo']] = row["Findings_EN"],row['Impressions_EN']
@@ -70,13 +71,19 @@ class CTReportDataset(Dataset):
 
     def prepare_samples(self):
         samples = []
-        for patient_folder in tqdm.tqdm(glob.glob(os.path.join(self.data_folder, '*'))):
-            for accession_folder in glob.glob(os.path.join(patient_folder, '*')):
-
-                for nii_file in glob.glob(os.path.join(accession_folder, '*.nii.gz')):
+        # print(self.data_folder)
+        patient_folders = glob.glob(os.path.join(self.data_folder, '*'))
+        for patient_folder in tqdm.tqdm(patient_folders):
+            assession_folders = glob.glob(os.path.join(patient_folder, '*'))
+            for accession_folder in assession_folders:
+                nii_files = glob.glob(os.path.join(accession_folder, '*.nii.gz'))
+                # print(accession_folder)
+                # print(nii_files)
+                for nii_file in nii_files:
                     accession_number = nii_file.split("/")[-1]
-                    #accession_number = accession_number.replace(".npz", ".nii.gz")
-                    if accession_number not in self.accession_to_text:
+                    accession_number = accession_number.replace(".npz", "")
+                    if accession_number not in self.accession_to_text.keys():
+                        print(f"Accession number {accession_number} not found in the csv file. Skipping...")
                         continue
 
                     impression_text = self.accession_to_text[accession_number]
@@ -91,6 +98,7 @@ class CTReportDataset(Dataset):
                     input_text = f'{impression_text}'
                     samples.append((nii_file, input_text_concat))
                     self.paths.append(nii_file)
+        # print(samples)
         return samples
 
     def __len__(self):
@@ -102,7 +110,7 @@ class CTReportDataset(Dataset):
         nii_img = nib.load(str(path))
         img_data = nii_img.get_fdata()
 
-        df = pd.read_csv("train_metadata.csv") #select the metadata
+        df = pd.read_csv("/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/metadata/train_metadata.csv") #select the metadata
         file_name = path.split("/")[-1]
         row = df[df['VolumeName'] == file_name]
         slope = float(row["RescaleSlope"].iloc[0])

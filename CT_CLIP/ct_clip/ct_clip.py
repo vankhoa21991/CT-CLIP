@@ -593,7 +593,9 @@ class CTCLIP(nn.Module):
     def load(self, path):
         path = Path(path)
         assert path.exists()
-        pt = torch.load(str(path))
+        # pt = torch.load(str(path))
+        # print(path)
+        pt = torch.load(str(path), weights_only=False)
         self.load_state_dict(pt)
 
     def tokenize(self, prompt):
