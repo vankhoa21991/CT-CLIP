@@ -4,3 +4,6 @@ transformer_maskgit/transformer_maskgit/__pycache__
 scripts/output_folder
 inference_zeroshot
 *.png
+output_folder
+*.txt
+inference_zeroshot_new

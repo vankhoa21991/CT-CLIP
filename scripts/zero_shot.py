@@ -241,108 +241,22 @@ class CTClipInference(nn.Module):
     def is_main(self):
         return self.accelerator.is_main_process
 
-    # def train_step(self):
-    #     device = self.device
-
-    #     steps = int(self.steps.item())
-
-
-    #     # logs
-    #     logs = {}
-
-    #     valid_latent_dir = self.results_folder / 'valid_latents'
-    #     valid_latent_dir.mkdir(parents=True, exist_ok=True)
-
-    #     os.makedirs(f"{valid_latent_dir}/text", exist_ok=True)
-    #     os.makedirs(f"{valid_latent_dir}/image", exist_ok=True)
-
-
-
-    #     if True:
-    #         with torch.no_grad():
-
-    #             models_to_evaluate = ((self.CTClip, str(steps)),)
-
-    #             for model, filename in models_to_evaluate:
-    #                 model.eval()
-    #                 predictedall=[]
-    #                 realall=[]
-    #                 logits = []
-
-                    
-    #                 accession_names=[]
-    #                 pathologies = ['Medical material','Arterial wall calcification', 'Cardiomegaly', 'Pericardial effusion','Coronary artery wall calcification', 'Hiatal hernia','Lymphadenopathy', 'Emphysema', 'Atelectasis', 'Lung nodule','Lung opacity', 'Pulmonary fibrotic sequela', 'Pleural effusion', 'Mosaic attenuation pattern','Peribronchial thickening', 'Consolidation', 'Bronchiectasis','Interlobular septal thickening']
-    #                 for i in tqdm.tqdm(range(len(self.ds))):
-    #                     valid_data, text, onehotlabels, acc_name = next(self.dl_iter)
-
-    #                     plotdir = self.result_folder_txt
-    #                     Path(plotdir).mkdir(parents=True, exist_ok=True)
-
-    #                     predictedlabels=[]
-    #                     onehotlabels_append=[]
-    #                     text_latent_list = []
-    #                     image_latent_list = []
-
-    #                     for pathology in pathologies:
-    #                         text = [f"{pathology} is present.", f"{pathology} is not present."]
-    #                         text_tokens=self.tokenizer(
-    #                                         text, return_tensors="pt", padding="max_length", truncation=True, max_length=512).to(device)
-
-    #                         output = model(text_tokens, valid_data.cuda(),  device=device)
-
-    #                         # text_latents, image_latents, _ = model(text_tokens, valid_data.cuda(),  device=device, return_latents=True)
-    #                         # print(text_latents.shape, image_latents.shape)
-
-    #                         # text_latent_list.append(text_latents.detach().cpu().numpy())
-    #                         # image_latent_list.append(image_latents.detach().cpu().numpy())
-
-    #                         output = apply_softmax(output)
-
-    #                         append_out=output.detach().cpu().numpy()
-    #                         predictedlabels.append(append_out[0])
-
-    #                     predictedall.append(predictedlabels)
-    #                     realall.append(onehotlabels.detach().cpu().numpy()[0])
-    #                     accession_names.append(acc_name[0])
-
-    #                     # Save the latent representations
-    #                     # text_latent_list = np.array(text_latent_list)
-    #                     # image_latent_list = np.array(image_latent_list)
-    #                     # np.savez(f"{valid_latent_dir}/text/{acc_name[0]}.npz", data=text_latent_list)
-    #                     # np.savez(f"{valid_latent_dir}/image/{acc_name[0]}.npz", data=image_latent_list)
-                        
-
-    #                 realall=np.array(realall)
-    #                 predictedall=np.array(predictedall)
-
-    #                 np.savez(f"{plotdir}labels_weights.npz", data=realall)
-    #                 np.savez(f"{plotdir}predicted_weights.npz", data=predictedall)
-    #                 with open(f"{plotdir}accessions.txt", "w") as file:
-    #                     for item in accession_names:
-    #                         file.write(item + "\n")
-
-
-    #                 dfs=evaluate_internal(predictedall,realall,pathologies, plotdir)
-
-    #                 writer = pd.ExcelWriter(f'{plotdir}aurocs.xlsx', engine='xlsxwriter')
-
-    #                 dfs.to_excel(writer, sheet_name='Sheet1', index=False)
-
-    #                 writer.close()
-    #     self.steps += 1
-    #     return logs
-    
     def train_step(self):
         device = self.device
 
         steps = int(self.steps.item())
+
+
         # logs
         logs = {}
 
-        txt_latent_save_dir = os.path.join(self.result_folder_txt, "text")
-        img_latent_save_dir = os.path.join(self.result_folder_txt, "image")
-        os.makedirs(txt_latent_save_dir, exist_ok=True)
-        os.makedirs(img_latent_save_dir, exist_ok=True)
+        valid_latent_dir = self.results_folder / 'valid_latents'
+        valid_latent_dir.mkdir(parents=True, exist_ok=True)
+
+        os.makedirs(f"{valid_latent_dir}/text", exist_ok=True)
+        os.makedirs(f"{valid_latent_dir}/image", exist_ok=True)
+
+
 
         if True:
             with torch.no_grad():
@@ -351,80 +265,166 @@ class CTClipInference(nn.Module):
 
                 for model, filename in models_to_evaluate:
                     model.eval()
-                    # predictedall=[]
-                    # realall=[]
-                    # logits = []
+                    predictedall=[]
+                    realall=[]
+                    logits = []
 
-                    # text_latent_list = []
-                    # image_latent_list = []
-                    # accession_names=[]
-                    # pathologies = ['Medical material','Arterial wall calcification', 'Cardiomegaly', 'Pericardial effusion','Coronary artery wall calcification', 'Hiatal hernia','Lymphadenopathy', 'Emphysema', 'Atelectasis', 'Lung nodule','Lung opacity', 'Pulmonary fibrotic sequela', 'Pleural effusion', 'Mosaic attenuation pattern','Peribronchial thickening', 'Consolidation', 'Bronchiectasis','Interlobular septal thickening']
                     
-                    
+                    accession_names=[]
+                    pathologies = ['Medical material','Arterial wall calcification', 'Cardiomegaly', 'Pericardial effusion','Coronary artery wall calcification', 'Hiatal hernia','Lymphadenopathy', 'Emphysema', 'Atelectasis', 'Lung nodule','Lung opacity', 'Pulmonary fibrotic sequela', 'Pleural effusion', 'Mosaic attenuation pattern','Peribronchial thickening', 'Consolidation', 'Bronchiectasis','Interlobular septal thickening']
                     for i in tqdm.tqdm(range(len(self.ds))):
-                        # if i > 10:
-                        #     break
                         valid_data, text, onehotlabels, acc_name = next(self.dl_iter)
-                        print(f"i: {i}, acc_name: {acc_name}")
 
                         plotdir = self.result_folder_txt
                         Path(plotdir).mkdir(parents=True, exist_ok=True)
 
-                        text_tokens=self.tokenizer(
+                        predictedlabels=[]
+                        onehotlabels_append=[]
+                        text_latent_list = []
+                        image_latent_list = []
+
+                        for pathology in pathologies:
+                            text = [f"{pathology} is present.", f"{pathology} is not present."]
+                            text_tokens=self.tokenizer(
                                             text, return_tensors="pt", padding="max_length", truncation=True, max_length=512).to(device)
 
-                        outs = model(text_tokens, valid_data.cuda(),  device=device, return_latents=True)
-                        for j, out in enumerate(outs):
-                            print(f"out shape: {out.shape}, j = {j}")
-                        text_latents, image_latents, *_ = outs
-                        # text_latent_list.append(text_latents.detach().cpu().numpy())
-                        # image_latent_list.append(image_latents.detach().cpu().numpy())
+                            output = model(text_tokens, valid_data.cuda(),  device=device)
 
-                        txt_latent_save_path = os.path.join(txt_latent_save_dir, f"{acc_name[0]}.npz")
-                        img_latent_save_path = os.path.join(img_latent_save_dir, f"{acc_name[0]}.npz")
+                            # text_latents, image_latents, _ = model(text_tokens, valid_data.cuda(),  device=device, return_latents=True)
+                            # print(text_latents.shape, image_latents.shape)
 
-                        np.savez(txt_latent_save_path, arr=text_latents.detach().cpu().numpy())
-                        np.savez(img_latent_save_path, arr=image_latents.detach().cpu().numpy())
+                            # text_latent_list.append(text_latents.detach().cpu().numpy())
+                            # image_latent_list.append(image_latents.detach().cpu().numpy())
 
-                        # predictedlabels=[]
-                        # onehotlabels_append=[]
+                            output = apply_softmax(output)
 
-                        # for pathology in pathologies:
-                        #     text = [f"{pathology} is present.", f"{pathology} is not present."]
-                            
-                            # output = model(text_tokens, valid_data.cuda(),  device=device)
+                            append_out=output.detach().cpu().numpy()
+                            predictedlabels.append(append_out[0])
 
-                            # output = apply_softmax(output)
+                        predictedall.append(predictedlabels)
+                        realall.append(onehotlabels.detach().cpu().numpy()[0])
+                        accession_names.append(acc_name[0])
 
-                            # append_out=output.detach().cpu().numpy()
-                            # predictedlabels.append(append_out[0])
+                        # Save the latent representations
+                        # text_latent_list = np.array(text_latent_list)
+                        # image_latent_list = np.array(image_latent_list)
+                        # np.savez(f"{valid_latent_dir}/text/{acc_name[0]}.npz", data=text_latent_list)
+                        # np.savez(f"{valid_latent_dir}/image/{acc_name[0]}.npz", data=image_latent_list)
+                        
 
-                        # predictedall.append(predictedlabels)
-                        # realall.append(onehotlabels.detach().cpu().numpy()[0])
-                        # accession_names.append(acc_name[0])
-                        # print(f"finished {i} out of {len(self.ds)}")
+                    realall=np.array(realall)
+                    predictedall=np.array(predictedall)
 
-                    # realall=np.array(realall)
-                    # predictedall=np.array(predictedall)
-
-                    # print(f"saving results to {plotdir}")
-
-                    # np.savez(f"{plotdir}labels_weights.npz", data=realall)
-                    # np.savez(f"{plotdir}predicted_weights.npz", data=predictedall)
-                    # with open(f"{plotdir}accessions.txt", "w") as file:
-                    #     for item in accession_names:
-                    #         file.write(item + "\n")
+                    np.savez(f"{plotdir}labels_weights.npz", data=realall)
+                    np.savez(f"{plotdir}predicted_weights.npz", data=predictedall)
+                    with open(f"{plotdir}accessions.txt", "w") as file:
+                        for item in accession_names:
+                            file.write(item + "\n")
 
 
-                    # dfs=evaluate_internal(predictedall,realall,pathologies, plotdir)
+                    dfs=evaluate_internal(predictedall,realall,pathologies, plotdir)
 
-                    # writer = pd.ExcelWriter(f'{plotdir}aurocs.xlsx', engine='xlsxwriter')
+                    writer = pd.ExcelWriter(f'{plotdir}aurocs.xlsx', engine='xlsxwriter')
 
-                    # dfs.to_excel(writer, sheet_name='Sheet1', index=False)
+                    dfs.to_excel(writer, sheet_name='Sheet1', index=False)
 
-                    # writer.close()
+                    writer.close()
         self.steps += 1
         return logs
+    
+    # def train_step(self):
+    #     device = self.device
+
+    #     steps = int(self.steps.item())
+    #     # logs
+    #     logs = {}
+
+    #     txt_latent_save_dir = os.path.join(self.result_folder_txt, "text")
+    #     img_latent_save_dir = os.path.join(self.result_folder_txt, "image")
+    #     os.makedirs(txt_latent_save_dir, exist_ok=True)
+    #     os.makedirs(img_latent_save_dir, exist_ok=True)
+
+    #     if True:
+    #         with torch.no_grad():
+
+    #             models_to_evaluate = ((self.CTClip, str(steps)),)
+
+    #             for model, filename in models_to_evaluate:
+    #                 model.eval()
+    #                 # predictedall=[]
+    #                 # realall=[]
+    #                 # logits = []
+
+    #                 # text_latent_list = []
+    #                 # image_latent_list = []
+    #                 # accession_names=[]
+    #                 # pathologies = ['Medical material','Arterial wall calcification', 'Cardiomegaly', 'Pericardial effusion','Coronary artery wall calcification', 'Hiatal hernia','Lymphadenopathy', 'Emphysema', 'Atelectasis', 'Lung nodule','Lung opacity', 'Pulmonary fibrotic sequela', 'Pleural effusion', 'Mosaic attenuation pattern','Peribronchial thickening', 'Consolidation', 'Bronchiectasis','Interlobular septal thickening']
+                    
+                    
+    #                 for i in tqdm.tqdm(range(len(self.ds))):
+    #                     # if i > 10:
+    #                     #     break
+    #                     valid_data, text, onehotlabels, acc_name = next(self.dl_iter)
+    #                     print(f"i: {i}, acc_name: {acc_name}")
+
+    #                     plotdir = self.result_folder_txt
+    #                     Path(plotdir).mkdir(parents=True, exist_ok=True)
+
+    #                     text_tokens=self.tokenizer(
+    #                                         text, return_tensors="pt", padding="max_length", truncation=True, max_length=512).to(device)
+
+    #                     outs = model(text_tokens, valid_data.cuda(),  device=device, return_latents=True)
+    #                     for j, out in enumerate(outs):
+    #                         print(f"out shape: {out.shape}, j = {j}")
+    #                     text_latents, image_latents, *_ = outs
+    #                     # text_latent_list.append(text_latents.detach().cpu().numpy())
+    #                     # image_latent_list.append(image_latents.detach().cpu().numpy())
+
+    #                     txt_latent_save_path = os.path.join(txt_latent_save_dir, f"{acc_name[0]}.npz")
+    #                     img_latent_save_path = os.path.join(img_latent_save_dir, f"{acc_name[0]}.npz")
+
+    #                     np.savez(txt_latent_save_path, arr=text_latents.detach().cpu().numpy())
+    #                     np.savez(img_latent_save_path, arr=image_latents.detach().cpu().numpy())
+
+    #                     # predictedlabels=[]
+    #                     # onehotlabels_append=[]
+
+    #                     # for pathology in pathologies:
+    #                     #     text = [f"{pathology} is present.", f"{pathology} is not present."]
+                            
+    #                         # output = model(text_tokens, valid_data.cuda(),  device=device)
+
+    #                         # output = apply_softmax(output)
+
+    #                         # append_out=output.detach().cpu().numpy()
+    #                         # predictedlabels.append(append_out[0])
+
+    #                     # predictedall.append(predictedlabels)
+    #                     # realall.append(onehotlabels.detach().cpu().numpy()[0])
+    #                     # accession_names.append(acc_name[0])
+    #                     # print(f"finished {i} out of {len(self.ds)}")
+
+    #                 # realall=np.array(realall)
+    #                 # predictedall=np.array(predictedall)
+
+    #                 # print(f"saving results to {plotdir}")
+
+    #                 # np.savez(f"{plotdir}labels_weights.npz", data=realall)
+    #                 # np.savez(f"{plotdir}predicted_weights.npz", data=predictedall)
+    #                 # with open(f"{plotdir}accessions.txt", "w") as file:
+    #                 #     for item in accession_names:
+    #                 #         file.write(item + "\n")
+
+
+    #                 # dfs=evaluate_internal(predictedall,realall,pathologies, plotdir)
+
+    #                 # writer = pd.ExcelWriter(f'{plotdir}aurocs.xlsx', engine='xlsxwriter')
+
+    #                 # dfs.to_excel(writer, sheet_name='Sheet1', index=False)
+
+    #                 # writer.close()
+    #     self.steps += 1
+    #     return logs
 
 
 

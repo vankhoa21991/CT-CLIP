@@ -43,15 +43,15 @@ clip = CTCLIP(
 )
 trainer = CTClipTrainer(
     clip,
-    reports_file_train= "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/radiology_text_reports/train_reports.csv",
-    reports_file_valid= "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/radiology_text_reports/validation_reports.csv",
-    data_train= "/mnt/home/admvkl@median.cad/code/public/example_download_script/data_volumes/dataset/train",
-    data_valid = "/mnt/home/admvkl@median.cad/code/public/example_download_script/data_volumes/dataset/valid_preprocessed",
-    labels = "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv",
-    batch_size = 2,
-    results_folder="output_folder",
+    reports_file_train= "/mnt/datalake/DS-lake/vankhoa/CT-RATE/dataset/radiology_text_reports/train_reports.csv",
+    reports_file_valid= "/mnt/datalake/DS-lake/vankhoa/CT-RATE/dataset/radiology_text_reports/validation_reports.csv",
+    data_train= "/mnt/datalake/DS-lake/vankhoa/CT-RATE/data_volumes/dataset/train",
+    data_valid = "/mnt/datalake/DS-lake/vankhoa/CT-RATE/dataset/valid_preprocessed",
+    labels = "/mnt/datalake/DS-lake/vankhoa/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv",
+    batch_size = 4,
+    results_folder="/mnt/datalake/DS-lake/vankhoa/CT-RATE/dataset/output",
     num_train_steps = 100001,
-    num_workers = 4,
+    num_workers = 8,
 )
 
 trainer.train()

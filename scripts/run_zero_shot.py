@@ -36,15 +36,30 @@ clip = CTCLIP(
 
 )
 
-clip.load("/mnt/home/admvkl@median.cad/code/public/CT-RATE/models/CT-CLIP-Related/CT-CLIP_v2.pt")
+
+
+# clip.load("/mnt/home/admvkl@median.cad/code/public/CT-RATE/models/CT-CLIP-Related/CT-CLIP_v2.pt")
+
+import torch
+
+# Load checkpoint
+checkpoint = torch.load("/mnt/home/admvkl@median.cad/code/public/CT-CLIP/scripts/output_folder/CTClip.25000.pt", map_location="cpu")
+
+# Remove `module.` prefix if it exists
+new_state_dict = {}
+for k, v in checkpoint.items():
+    new_key = k.replace("module.", "")  # Remove 'module.' from key names
+    new_state_dict[new_key] = v
+
+clip.load_state_dict(new_state_dict, strict=False)  # strict=False to avoid issues
 
 inference = CTClipInference(
     clip,
     data_folder = '/mnt/home/admvkl@median.cad/code/public/example_download_script/data_volumes/dataset/valid_preprocessed/',
     reports_file= "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/radiology_text_reports/validation_reports.csv",
     labels = "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv",
-    batch_size = 1,
-    results_folder="inference_zeroshot/",
+    batch_size = 4,
+    results_folder="inference_zeroshot_new/",
     num_train_steps = 1,
 )
 

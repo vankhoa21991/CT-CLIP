@@ -274,10 +274,10 @@ class CTClipTrainer(nn.Module):
 
         # update CTClip model
         video, text = next(self.dl_iter)
-        print(video.shape)
+        # print(video.shape)
         device=self.device
         video=video.to(device)
-        mask = torch.ones((video.shape[0], video.shape[2])).bool().to(device)
+        # mask = torch.ones((video.shape[0], video.shape[2])).bool().to(device)
         #text = text.to(device)
         text = list(text)
         text_tokens=self.tokenizer(text, return_tensors="pt", padding="max_length", truncation=True, max_length=512).to(device)
@@ -332,9 +332,9 @@ class CTClipTrainer(nn.Module):
 
                             output = apply_softmax(output)
 
-                            print(output)
+                            # print(output)
                             append_out=output.detach().cpu().numpy()
-                            print(output)
+                            # print(output)
                             if output[0]>output[1]:
                                 predictedlabels.append(append_out[0])
                             else:
@@ -378,8 +378,8 @@ class CTClipTrainer(nn.Module):
 
 
     def train(self, log_fn=noop):
-        device = next(self.CTClip.parameters()).device
-        device=torch.device('cuda')
+        # device = next(self.CTClip.parameters()).device
+        # device=torch.device('cuda')
         while self.steps < self.num_train_steps:
             logs = self.train_step()
             log_fn(logs)
