@@ -22,4 +22,4 @@ eval "$(conda shell.bash hook)"
 conda activate venv_py311
 
 cd /mnt/home/admvkl@median.cad/code/public/CT-CLIP
-python /mnt/home/admvkl@median.cad/code/public/CT-CLIP/scripts/run_train.py
+CUDA_VISIBLE_DEVICE=5 python /mnt/home/admvkl@median.cad/code/public/CT-CLIP/scripts/run_train.py

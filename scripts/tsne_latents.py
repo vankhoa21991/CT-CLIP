@@ -93,7 +93,7 @@ def plot_tsne(embedding, labels, k, concat_dict):
 
 if __name__ == "__main__":
     # latent_directory_train = "./path_to_latents/train/text_or_image"  # Directory containing train .npz files
-    latent_directory_valid = "/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/image"  # Directory containing validation .npz files
+    latent_directory_valid = "/mnt/home/admvkl@median.cad/code/public/CT-CLIP/scripts/inference_zeroshot_new/text"  # Directory containing validation .npz files
     # train_csv_path = "path_to_train_predicted_labels.csv"
     validation_csv_path = "/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv"
     # train_df = pd.read_csv(train_csv_path)

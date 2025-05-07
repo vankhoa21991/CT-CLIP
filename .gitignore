@@ -7,3 +7,5 @@ inference_zeroshot
 output_folder
 *.txt
 inference_zeroshot_new
+archive_results
+results

@@ -30,7 +30,7 @@ def calc_similarity(arr1, arr2):
 
     return (oneandone / (oneandone + oneorzero))
 
-data_folder = "/mnt/home/admvkl@median.cad/code/public/CT-CLIP/inference_zeroshot/image/"
+data_folder = "/mnt/home/admvkl@median.cad/code/public/CT-CLIP/results/CT-CLIP_v2/image/"
 
 # Scan the folder for .npz files
 npz_files = [f for f in tqdm.tqdm(os.listdir(data_folder)) if f.endswith('.npz')]
@@ -52,7 +52,7 @@ image_data = np.array(image_data_list)
 print(image_data.shape)
 
 # Load the validation labels
-df = pd.read_csv("/mnt/home/admvkl@median.cad/code/public/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv")
+df = pd.read_csv("/mnt/datalake/DS-lake/vankhoa/CT-RATE/dataset/multi_abnormality_labels/valid_predicted_labels.csv")
 print(df.info())
 ratios_external = []
 image_data_for_second = []
@@ -61,9 +61,9 @@ accs_for_second = []
 # Filter the image data based on the condition in the validation labels
 for k in tqdm.tqdm(range(image_data.shape[0])):
     acc_second = accs[k]
-    print(acc_second)
+    # print(acc_second)
     row_second = df[df['VolumeName'] == acc_second]
-    print(row_second)
+    # print(row_second)
     num_path = np.sum(row_second.iloc[:, 1:].values[0])
     if num_path != 0:
         image_data_for_second.append(image_data[k])
@@ -71,7 +71,7 @@ for k in tqdm.tqdm(range(image_data.shape[0])):
 
 image_data_for_second = np.array(image_data_for_second)
 print(image_data_for_second.shape)
-exit()
+# exit()
 k_list = [1, 5, 10, 50]
 list_outs = []
 
@@ -110,7 +110,7 @@ for return_n in k_list:
 # Write the output to a file
 # output_file_path = data_folder.replace("ima/", "") + "i2i_real.txt"
 output_file_path = Path(data_folder).parent / "i2i_real.txt"
-
+print(output_file_path)
 
 with open(output_file_path, "w") as file:
     for string in list_outs:

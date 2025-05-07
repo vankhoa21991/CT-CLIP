@@ -21,6 +21,7 @@ nvidia-smi
 eval "$(conda shell.bash hook)"
 conda activate venv_py39
 
-cd /mnt/home/admvkl@median.cad/code/public/CT-CLIP/scripts
+cd /mnt/home/admvkl@median.cad/code/public/CT-CLIP
 
-accelerate launch run_train.py
+CUDA_VISIBLE_DEVICES=0 python scripts/run_zero_shot.py --checkpoint /mnt/datalake/DS-lake/vankhoa/CT-RATE/models/CT-CLIP-Related/CT-CLIP_v2.pt \
+--results-folder /mnt/home/admvkl@median.cad/code/public/CT-CLIP/CT-CLIP_v2 
